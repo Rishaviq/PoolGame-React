@@ -1,6 +1,10 @@
 import LogInForm from "../Components/LogInForm";
+//import axios from "../api/axios";
+import { useAuth } from "../auth/AuthContext";
+import { setUserId } from "../auth/token";
 
 export default function LogIn() {
+  const { login } = useAuth();
   const handleLogin = async (credentials: {
     username: string;
     password: string;
@@ -21,6 +25,9 @@ export default function LogIn() {
 
       const data = await response.json();
       console.log("JWT:", data.jwt); // Replace with actual logic (e.g., saving to localStorage, redirect)
+      login(data.jwt);
+      setUserId(data.id);
+      console.log("Id:", data.id);
     } catch (error) {
       console.error("Error logging in:", error);
     }
