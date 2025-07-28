@@ -1,13 +1,26 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./Pages/LogInPage";
 import RegisterPage from "./Pages/RegisterPage";
+import Layout from "./Pages/Layout";
+import PlayerStatsPage from "./Pages/PersonalStatsPage";
+import { getUserId } from "./auth/token";
+import { PlayerStatsWrapper } from "./Pages/PersonalStatsWrapper";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/Register" element={<RegisterPage />} />
-      {/* Add more routes here */}
+      <Route path="/" element={<Layout />}>
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="/player/:id" element={<PlayerStatsWrapper />} />
+        <Route
+          index
+          element={
+            <PlayerStatsPage userId={getUserId()?.toString() || "null"} />
+          }
+        />
+        {/* Add more routes here */}
+      </Route>
     </Routes>
   );
 }

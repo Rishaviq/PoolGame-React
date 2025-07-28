@@ -28,6 +28,7 @@ export default function LogIn() {
       login(data.jwt);
       setUserId(data.id);
       console.log("Id:", data.id);
+      window.location.href = "/";
     } catch (error) {
       console.error("Error logging in:", error);
     }
