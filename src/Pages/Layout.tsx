@@ -22,18 +22,13 @@ export default function Layout() {
         <div className="collapse navbar-collapse justify-content-end">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link className="nav-link" to="/dashboard">
-                Dashboard
+              <Link className="nav-link" to="/game">
+                New Game
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/profile">
+              <Link className="nav-link" to="/">
                 Profile
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/settings">
-                Settings
               </Link>
             </li>
 

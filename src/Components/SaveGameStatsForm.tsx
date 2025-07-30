@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { getUserId } from "../auth/token";
 
 interface GameStatsFormProps {
   onSubmit: (data: GameStatsFormData) => void;
+  gameId: string;
 }
 
 export interface GameStatsFormData {
@@ -16,10 +18,13 @@ export interface GameStatsFormData {
   bestStreak: number;
 }
 
-const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({ onSubmit }) => {
+const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
+  onSubmit,
+  gameId,
+}) => {
   const [form, setForm] = useState<GameStatsFormData>({
-    gameId: 0,
-    userId: 0,
+    gameId: parseInt(gameId),
+    userId: parseInt(getUserId() || ""),
     isWinner: false,
     shotsMade: 0,
     shotsAttempted: 0,

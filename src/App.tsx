@@ -6,6 +6,8 @@ import PlayerStatsPage from "./Pages/PersonalStatsPage";
 import { getUserId } from "./auth/token";
 import { PlayerStatsWrapper } from "./Pages/PersonalStatsWrapper";
 import LiveGamePage from "./Pages/LiveGamePage";
+import NewGamePage from "./Pages/NewGamePage";
+import SaveGameStatsPage from "./Pages/LiveGamePage";
 
 export default function App() {
   return (
@@ -14,7 +16,8 @@ export default function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="/player/:id" element={<PlayerStatsWrapper />} />
-        <Route path="/game" element={<LiveGamePage />} />
+        <Route path="/game" element={<NewGamePage />} />
+        <Route path="/save-game" element={<SaveGameStatsPage />} />
         <Route
           index
           element={
