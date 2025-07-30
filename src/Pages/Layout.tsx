@@ -8,18 +8,38 @@ export default function Layout() {
       .split(";")
       .some((cookie) => cookie.trim().startsWith("token="))
   );
+
   function logout(): void {
     clearToken();
     clearUserId();
     setLoggedIn(false);
   }
+
   return (
     <div className="min-vh-100 d-flex flex-column bg-light text-dark">
       <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-4">
         <Link className="navbar-brand fw-bold text-primary" to="/">
           MyApp
         </Link>
-        <div className="collapse navbar-collapse justify-content-end">
+
+        {/* 🔧 Toggler button for mobile */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        {/* 🔧 Collapse content with matching ID */}
+        <div
+          className="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
           <ul className="navbar-nav">
             <li className="nav-item">
               <Link className="nav-link" to="/game">
@@ -42,7 +62,7 @@ export default function Layout() {
                 <li className="nav-item">
                   <button
                     onClick={logout}
-                    className="btn btn-outline-danger btn-sm"
+                    className="btn btn-outline-danger btn-sm nav-link"
                   >
                     Logout
                   </button>
