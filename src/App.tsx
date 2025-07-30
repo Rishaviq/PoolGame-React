@@ -5,7 +5,6 @@ import Layout from "./Pages/Layout";
 import PlayerStatsPage from "./Pages/PersonalStatsPage";
 import { getUserId } from "./auth/token";
 import { PlayerStatsWrapper } from "./Pages/PersonalStatsWrapper";
-import LiveGamePage from "./Pages/LiveGamePage";
 import NewGamePage from "./Pages/NewGamePage";
 import SaveGameStatsPage from "./Pages/LiveGamePage";
 
