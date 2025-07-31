@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 type PlayerStats = {
   userId: number;
@@ -13,11 +14,16 @@ type PlayerStats = {
 type Props = {
   stats: PlayerStats;
 };
+
 export const PlayerStatsCard: React.FC<Props> = ({
   stats,
 }: {
   stats: PlayerStats;
 }) => {
+  const navigate = useNavigate();
+  function handleClick() {
+    navigate(`/player/${stats.userId}`);
+  }
   const accuracy =
     stats.shotsAttempted > 0
       ? ((stats.shotsMade / stats.shotsAttempted) * 100).toFixed(1)
@@ -31,6 +37,7 @@ export const PlayerStatsCard: React.FC<Props> = ({
       style={{ minWidth: "250px" }}
     >
       <div
+        onClick={handleClick}
         className={`card-header text-white ${
           stats.isWinner ? "bg-success" : "bg-secondary"
         }`}
