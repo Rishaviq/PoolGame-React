@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import axios from "../api/axios";
+import { useNavigate } from "react-router-dom";
 import {
   FaTrophy,
   FaGamepad,
@@ -44,7 +45,7 @@ type PlayerStatsPageProps = {
 
 const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
   const [stats, setStats] = useState<PlayerStats | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -60,12 +61,20 @@ const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
     fetchStats();
   }, [userId]);
 
+  function handleHistoryClick(): void {
+    navigate(`/player/${userId}/history`);
+  }
+
   return (
     <div className="container my-5">
       <div className="text-center mb-4">
         <h2 className="fw-bold">User {userId} : Statistics</h2>
       </div>
-
+      <div className="text-center mb-4">
+        <button className="btn btn-primary mt-3" onClick={handleHistoryClick}>
+          View Game History
+        </button>
+      </div>
       {/* Game Outcomes */}
       <div className="mb-5">
         <h5 className="mb-3">Game Outcomes</h5>
