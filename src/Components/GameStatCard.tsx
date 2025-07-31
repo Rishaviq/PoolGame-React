@@ -4,11 +4,12 @@ export type PlayerGame = {
   gameDate: Date;
   gameIsDraw: boolean;
 };
-type GameCardProps = {
+interface GameCardProps {
   playergame: PlayerGame;
-};
+  onClick?: (id: string) => void;
+}
 
-export const GameCard = ({ playergame }: GameCardProps) => {
+export const GameCard = ({ playergame, onClick }: GameCardProps) => {
   const { isPlayerWinner, gameDate, gameIsDraw, gameId } = playergame;
 
   const resultText = gameIsDraw
@@ -24,7 +25,10 @@ export const GameCard = ({ playergame }: GameCardProps) => {
     : "text-danger";
 
   return (
-    <div className="border-bottom py-2 px-3">
+    <div
+      onClick={() => onClick?.(playergame.gameId.toString())}
+      className="border-bottom py-2 px-3"
+    >
       <div className={`fw-semibold ${resultColor}`}>{resultText}</div>
       <div className="text-muted small d-flex gap-2">
         <span>Game ID: {gameId}</span>
