@@ -51,6 +51,14 @@ export default function Layout() {
                 Profile
               </Link>
             </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to={"/player/" + getUserId() + "/history"}
+              >
+                Game History
+              </Link>
+            </li>
 
             {loggedIn ? (
               <>
