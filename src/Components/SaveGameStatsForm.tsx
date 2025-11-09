@@ -185,21 +185,6 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
                   </div>
                 ))}
 
-                {/* Winner checkbox */}
-                <div className="form-check form-switch mb-4">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="isWinner"
-                    name="isWinner"
-                    checked={form.isWinner}
-                    onChange={handleChange}
-                  />
-                  <label className="form-check-label" htmlFor="isWinner">
-                    Winner?
-                  </label>
-                </div>
-
                 {/* Submit button */}
                 <div className="d-grid">
                   <button type="submit" className="btn btn-primary btn-lg">

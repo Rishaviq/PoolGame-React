@@ -5,6 +5,7 @@ import SaveGameStatsForm, {
 import { useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { useLocation, Navigate } from "react-router-dom";
+import SelectWinAlert from "../../Components/SelectWinAlert";
 
 type LocationState = { gameId: number };
 
@@ -12,12 +13,16 @@ const SaveGameStatsPage: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [alertIsVisible, SetVisability] = useState<boolean | null>(null);
   const state = location.state as LocationState | null;
+  const [playerStats, setPlayerStats] = useState<GameStatsFormData | null>(
+    null
+  );
   if (!state?.gameId) {
     // fallback if someone directly types /save-game
     return <Navigate to="/" replace />;
   }
-  const handleSubmit = async (formData: GameStatsFormData) => {
+  const SendSubmit = async (formData: GameStatsFormData) => {
     try {
       const response = axios.post("player/stats/save", formData);
 
@@ -35,6 +40,26 @@ const SaveGameStatsPage: React.FC = () => {
     }
   };
 
+  function SubmitWin(): void {
+    const updatedStats = { ...playerStats, isWinner: true };
+    SendSubmit(updatedStats as GameStatsFormData);
+    SetVisability(false);
+  }
+
+  function SubmitLoss(): void {
+    const updatedStats = { ...playerStats, isWinner: false };
+    SendSubmit(updatedStats as GameStatsFormData);
+    SetVisability(false);
+  }
+
+  function ClsoeAlert(): void {
+    SetVisability(false);
+  }
+  const HandleSubmit = async (formData: GameStatsFormData) => {
+    SetVisability(true);
+    setPlayerStats(formData);
+  };
+
   return (
     <div className="container mt-5">
       <h2 className="mb-4">Save Game Stats</h2>
@@ -43,10 +68,18 @@ const SaveGameStatsPage: React.FC = () => {
           {message}
         </div>
       )}
+
       <SaveGameStatsForm
         gameId={state?.gameId.toString() || ""}
-        onSubmit={handleSubmit}
+        onSubmit={HandleSubmit}
       />
+      {alertIsVisible && (
+        <SelectWinAlert
+          OnYes={SubmitWin}
+          OnNo={SubmitLoss}
+          OnCancel={ClsoeAlert}
+        />
+      )}
     </div>
   );
 };
