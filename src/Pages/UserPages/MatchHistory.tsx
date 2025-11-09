@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "../api/axios";
-import { GameCard } from "../Components/GameStatCard";
-import type { PlayerGame } from "../Components/GameStatCard";
+import axios from "../../api/axios";
+import { GameCard } from "../../Components/GameStatCard";
+import type { PlayerGame } from "../../Components/GameStatCard";
 import { useNavigate } from "react-router-dom";
 
 interface PlayerHistoryResponse {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import {
   FaTrophy,
@@ -11,7 +11,7 @@ import {
   FaExclamationTriangle,
   FaMedal,
 } from "react-icons/fa";
-import { StatCard } from "../Components/StatCard";
+import { StatCard } from "../../Components/StatCard";
 
 const statIcons = {
   "Win Rate": <FaTrophy className="text-yellow-500 text-xl" />,
@@ -27,6 +27,7 @@ const statIcons = {
 };
 
 type PlayerStats = {
+  profileName?: string;
   playerWinRate?: number;
   totalGamesPlayed?: number;
   totalGamesWon?: number;
@@ -68,7 +69,7 @@ const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
   return (
     <div className="container my-5">
       <div className="text-center mb-4">
-        <h2 className="fw-bold">User {userId} : Statistics</h2>
+        <h2 className="fw-bold">{stats?.profileName} : Statistics</h2>
       </div>
       <div className="text-center mb-4">
         <button className="btn btn-primary mt-3" onClick={handleHistoryClick}>

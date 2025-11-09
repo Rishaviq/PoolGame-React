@@ -1,14 +1,15 @@
 import { Route, Routes } from "react-router-dom";
-import LoginPage from "./Pages/LogInPage";
-import RegisterPage from "./Pages/RegisterPage";
-import Layout from "./Pages/Layout";
-import PlayerStatsPage from "./Pages/PersonalStatsPage";
+import LoginPage from "./Pages/UserPages/LogInPage";
+import RegisterPage from "./Pages/UserPages/RegisterPage";
+import Layout from "./Pages/SharedPages/Layout";
+import PlayerStatsPage from "./Pages/UserPages/PersonalStatsPage";
 import { getUserId } from "./auth/token";
-import { PlayerStatsWrapper } from "./Pages/PersonalStatsWrapper";
-import NewGamePage from "./Pages/NewGamePage";
-import SaveGameStatsPage from "./Pages/LiveGamePage";
-import MathHistory from "./Pages/MatchHistory";
-import GameInfoPage from "./Pages/GameInfoPage";
+import { PlayerStatsWrapper } from "./Pages/UserPages/PersonalStatsWrapper";
+import NewGamePage from "./Pages/GamePages/NewGamePage";
+import SaveGameStatsPage from "./Pages/GamePages/LiveGamePage";
+import MathHistory from "./Pages/UserPages/MatchHistory";
+import GameInfoPage from "./Pages/GamePages/GameInfoPage";
+import Leaderboard from "./Pages/UserPages/LeaderBoard";
 
 export default function App() {
   return (
@@ -21,6 +22,8 @@ export default function App() {
         <Route path="/save-game" element={<SaveGameStatsPage />} />
         <Route path="/player/:id/history" element={<MathHistory />} />
         <Route path="/game/game-info/:id" element={<GameInfoPage />} />
+        <Route path="/LeaderBoard" element={<Leaderboard />} />
+
         <Route
           index
           element={

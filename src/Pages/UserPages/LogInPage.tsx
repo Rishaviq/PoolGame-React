@@ -1,7 +1,7 @@
-import LogInForm from "../Components/LogInForm";
+import LogInForm from "../../Components/LogInForm";
 //import axios from "../api/axios";
-import { useAuth } from "../auth/AuthContext";
-import { setUserId } from "../auth/token";
+import { useAuth } from "../../auth/AuthContext";
+import { setUserId } from "../../auth/token";
 
 export default function LogIn() {
   const { login } = useAuth();

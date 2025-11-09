@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { PlayerStatsCard } from "../Components/PlayerPerGameCard";
-import axios from "../api/axios";
+import { PlayerStatsCard } from "../../Components/PlayerPerGameCard";
+import axios from "../../api/axios";
 import { useParams } from "react-router-dom";
 
 type PlayerStats = {

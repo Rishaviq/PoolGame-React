@@ -1,5 +1,5 @@
-import RegisterForm from "../Components/RegisterForm.tsx";
-import axios from "../api/axios";
+import RegisterForm from "../../Components/RegisterForm.tsx";
+import axios from "../../api/axios.tsx";
 
 export default function Register() {
   const HandleRegister = async (registerInfo: {

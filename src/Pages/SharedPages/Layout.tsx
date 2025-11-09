@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { getUserId, clearToken, clearUserId } from "../auth/token";
+import { getUserId, clearToken, clearUserId } from "../../auth/token";
 
 export default function Layout() {
   const [loggedIn, setLoggedIn] = useState(() =>
@@ -57,6 +57,11 @@ export default function Layout() {
                 to={"/player/" + getUserId() + "/history"}
               >
                 Game History
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to={"/Leaderboard"}>
+                Leaderboard
               </Link>
             </li>
 

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import SaveGameStatsForm, {
   type GameStatsFormData,
-} from "../Components/SaveGameStatsForm";
+} from "../../Components/SaveGameStatsForm";
 import { useNavigate } from "react-router-dom";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import { useLocation, Navigate } from "react-router-dom";
 
 type LocationState = { gameId: number };
