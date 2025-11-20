@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SaveGameStatsForm, {
   type GameStatsFormData,
-} from "../../Components/SaveGameStatsForm";
+} from "../../Components/Forms/SaveGameStatsForm";
 import { useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { useLocation, Navigate } from "react-router-dom";
-import SelectWinAlert from "../../Components/SelectWinAlert";
+import SelectWinAlert from "../../Components/Alerts/SelectWinAlert";
+import { OpponentCard } from "../../Components/StatCards/OpponentCard";
+import { useGameHub } from "../../api/useGameHub";
+import { JoinLiveGame } from "../../api/UpdateLiveStatsHelper";
+import { getProfileName, getUserId } from "../../auth/token";
+import { GetGameConnection } from "../../api/connectionBuilder";
+import * as signalR from "@microsoft/signalr";
+import { useLeaveGameOnUnload } from "../../api/useStopConnectionOnLeave";
 
 type LocationState = { gameId: number };
 
@@ -18,6 +25,14 @@ const SaveGameStatsPage: React.FC = () => {
   const [playerStats, setPlayerStats] = useState<GameStatsFormData | null>(
     null
   );
+  const [connection, setConnection] = useState<signalR.HubConnection | null>(
+    null
+  );
+
+  const { opponentStats } = useGameHub(connection);
+
+  useLeaveGameOnUnload(connection);
+
   if (!state?.gameId) {
     // fallback if someone directly types /save-game
     return <Navigate to="/" replace />;
@@ -59,6 +74,37 @@ const SaveGameStatsPage: React.FC = () => {
     SetVisability(true);
     setPlayerStats(formData);
   };
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const conn = await GetGameConnection();
+        if (!alive) return;
+        setConnection(conn); // store in state or context
+        JoinGame();
+
+        if (!conn) {
+          console.log("return error");
+          return;
+        }
+      } catch (err) {
+        console.error("Failed to connect:", err);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [location]);
+
+  function JoinGame(): void {
+    console.log("joining game");
+    JoinLiveGame({
+      gameId: state?.gameId ?? 0,
+      userId: parseInt(getUserId() || ""),
+      profileName: getProfileName() || "",
+    });
+  }
 
   return (
     <div className="container mt-5">
@@ -80,6 +126,13 @@ const SaveGameStatsPage: React.FC = () => {
           OnCancel={ClsoeAlert}
         />
       )}
+      <div className="row justify-content-center">
+        {opponentStats.map((player) => (
+          <div key={player.userId} className="col-md-6 mb-4">
+            <OpponentCard stats={player} profileName={player.profileName} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -23,3 +23,15 @@ export const getUserId = (): string | null => {
 export const clearUserId = () => {
   document.cookie = `userId=; path=/; max-age=0`;
 };
+
+export const setProfileName = (profileName: string) => {
+  document.cookie = `profileName=${profileName}; path=/; max-age=86400; SameSite=Strict; Secure`;
+};
+export const getProfileName = (): string | null => {
+  const match = document.cookie.match(new RegExp("(^| )profileName=([^;]+)"));
+  return match ? match[2] : null;
+};
+
+export const clearProfileName = () => {
+  document.cookie = `profileName=; path=/; max-age=0`;
+};

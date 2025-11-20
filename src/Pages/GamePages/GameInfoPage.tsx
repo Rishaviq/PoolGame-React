@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PlayerStatsCard } from "../../Components/PlayerPerGameCard";
+import { PlayerStatsCard } from "../../Components/StatCards/PlayerPerGameCard";
 import axios from "../../api/axios";
 import { useParams } from "react-router-dom";
 

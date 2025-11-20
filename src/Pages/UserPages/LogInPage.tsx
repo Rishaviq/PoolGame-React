@@ -1,7 +1,7 @@
-import LogInForm from "../../Components/LogInForm";
+import LogInForm from "../../Components/Forms/LogInForm";
 //import axios from "../api/axios";
 import { useAuth } from "../../auth/AuthContext";
-import { setUserId } from "../../auth/token";
+import { setProfileName, setUserId } from "../../auth/token";
 
 export default function LogIn() {
   const { login } = useAuth();
@@ -27,6 +27,7 @@ export default function LogIn() {
       console.log("JWT:", data.jwt); // Replace with actual logic (e.g., saving to localStorage, redirect)
       login(data.jwt);
       setUserId(data.id);
+      setProfileName(data.profileName);
       console.log("Id:", data.id);
       window.location.href = "/";
     } catch (error) {

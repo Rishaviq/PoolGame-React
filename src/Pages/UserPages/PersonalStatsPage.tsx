@@ -11,7 +11,8 @@ import {
   FaExclamationTriangle,
   FaMedal,
 } from "react-icons/fa";
-import { StatCard } from "../../Components/StatCard";
+import { StatCard } from "../../Components/StatCards/StatCard";
+import { setProfileName } from "../../auth/token";
 
 const statIcons = {
   "Win Rate": <FaTrophy className="text-yellow-500 text-xl" />,
@@ -55,6 +56,7 @@ const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
           .get<PlayerStats>(`player/${userId}/stats`)
           .then((res) => setStats(res.data))
           .catch((err) => console.error(err));
+        setProfileName(stats?.profileName ?? "");
       } catch (error) {
         console.error("Failed to fetch stats:", error);
       }

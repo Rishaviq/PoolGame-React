@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import UserStats from "../../Components//LeaderBoardCard";
+import UserStats from "../../Components/StatCards/LeaderBoardCard";
 import axios from "../../api/axios";
 
 type User = {
