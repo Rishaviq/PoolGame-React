@@ -54,9 +54,12 @@ const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
         console.log(userId);
         axios
           .get<PlayerStats>(`player/${userId}/stats`)
-          .then((res) => setStats(res.data))
+          .then((res) => {
+            setStats(res.data);
+            setProfileName(res.data.profileName ?? "error");
+          })
+
           .catch((err) => console.error(err));
-        setProfileName(stats?.profileName ?? "");
       } catch (error) {
         console.error("Failed to fetch stats:", error);
       }
