@@ -6,7 +6,7 @@ let startPromise: Promise<void> | null = null;
 export function GetGameConnection(): Promise<signalR.HubConnection> {
   if (!connection) {
     connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://poolgameapi.com/LiveGame")
+      .withUrl("https://poolgameapi.com/api/v2/LiveGame")
       .withAutomaticReconnect()
       .build();
 
