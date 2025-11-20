@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
-import { JoinLiveGame } from "../../api/UpdateLiveStatsHelper";
-import { getProfileName, getUserId } from "../../auth/token";
 
 type CreateGameResponse = {
   gameId: number;

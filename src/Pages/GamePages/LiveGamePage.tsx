@@ -10,10 +10,7 @@ import { OpponentCard } from "../../Components/StatCards/OpponentCard";
 import { useGameHub } from "../../api/useGameHub";
 import { JoinLiveGame } from "../../api/UpdateLiveStatsHelper";
 import { getProfileName, getUserId } from "../../auth/token";
-import {
-  GetGameConnection,
-  StopGameConnection,
-} from "../../api/connectionBuilder";
+import { GetGameConnection } from "../../api/connectionBuilder";
 import * as signalR from "@microsoft/signalr";
 import { useLeaveGameOnUnload } from "../../api/useStopConnectionOnLeave";
 

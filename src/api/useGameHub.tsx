@@ -1,10 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
-import { getProfileName, getUserId } from "../auth/token";
-import type { GameStatsFormData } from "../Components/Forms/SaveGameStatsForm";
-import { GetGameConnection, StopGameConnection } from "./connectionBuilder";
+import { getUserId } from "../auth/token";
 import { UpdateLiveStats } from "./UpdateLiveStatsHelper";
-import { useLocation } from "react-router-dom";
 
 interface JoinGameRequest {
   userId: number;
@@ -33,10 +30,7 @@ export type EnemyPlayerCard = {
 
 export const useGameHub = (connection: signalR.HubConnection | null) => {
   const [opponentStats, setPlayerStats] = useState<EnemyPlayerCard[]>([]);
-  const [isConnected, setConnected] = useState(false);
   const playerId = parseInt(getUserId() ?? "");
-  const profileName = getProfileName();
-  const location = useLocation();
 
   useEffect(() => {
     if (!connection) return;
