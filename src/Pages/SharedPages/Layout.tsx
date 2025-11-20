@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { getUserId, clearToken, clearUserId } from "../../auth/token";
+import {
+  getUserId,
+  clearToken,
+  clearUserId,
+  clearProfileName,
+} from "../../auth/token";
 
 export default function Layout() {
   const [loggedIn, setLoggedIn] = useState(() =>
@@ -13,13 +18,20 @@ export default function Layout() {
     clearToken();
     clearUserId();
     setLoggedIn(false);
+    clearProfileName();
   }
 
   return (
     <div className="min-vh-100 d-flex flex-column bg-light text-dark">
       <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-4">
         <Link className="navbar-brand fw-bold text-primary" to="/">
-          MyApp
+          <img
+            src="/celestial-01.png"
+            alt="icon"
+            className="me-2"
+            style={{ width: 30, height: 30 }}
+          />
+          CA Pool App
         </Link>
 
         {/* 🔧 Toggler button for mobile */}

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getUserId } from "../auth/token";
+import { getProfileName, getUserId } from "../../auth/token";
+import { UpdateLiveStats } from "../../api/UpdateLiveStatsHelper";
 
 interface GameStatsFormProps {
   onSubmit: (data: GameStatsFormData) => void;
@@ -10,6 +11,7 @@ interface GameStatsFormProps {
 export interface GameStatsFormData {
   gameId: number;
   userId: number;
+  profileName?: string;
   isWinner: boolean;
   shotsMade: number;
   shotsAttempted: number;
@@ -25,6 +27,7 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
   const [form, setForm] = useState<GameStatsFormData>({
     gameId: parseInt(gameId),
     userId: parseInt(getUserId() || ""),
+    profileName: getProfileName() || "",
     isWinner: false,
     shotsMade: 0,
     shotsAttempted: 0,
@@ -32,6 +35,8 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
     fouls: 0,
     bestStreak: 0,
   });
+
+  const [isLoaded, setLoaded] = useState(false);
 
   const updateField = (name: keyof GameStatsFormData, delta: number) => {
     setForm((prev) => {
@@ -71,21 +76,23 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
 
-    if (type === "checkbox" && "checked" in e.target) {
-      const checked = (e.target as HTMLInputElement).checked;
-      setForm((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-    } else {
-      setForm((prev) => ({
-        ...prev,
-        [name]: Number(value),
-      }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: Number(value),
+    }));
   };
+
+  useEffect(() => {
+    if (isLoaded) {
+      document.cookie = `form=${encodeURIComponent(
+        JSON.stringify(form)
+      )}; path=/; max-age=86400; SameSite=Strict; Secure`;
+    }
+    console.log("savecookies");
+    UpdateLiveStats();
+  }, [form]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +100,25 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
       onSubmit(form);
     }
   };
+
+  function LoadCookies(): void {
+    const match = document.cookie.match(/(?:^|; )form=([^;]*)/);
+    if (match) {
+      const cookieFormData = JSON.parse(decodeURIComponent(match[1]));
+      console.log(cookieFormData);
+      if (cookieFormData.gameId === form.gameId) {
+        setForm({
+          ...cookieFormData,
+          userId: parseInt(getUserId() || ""),
+        });
+      }
+    }
+    setLoaded(true);
+    console.log("LoadCookies");
+  }
+  useEffect(() => {
+    LoadCookies();
+  }, []);
 
   return (
     <div className="container py-5">
@@ -154,7 +180,7 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
                         className="btn btn-outline-secondary"
                         onClick={() => updateField(name, -1)}
                       >
-                        –
+                        -
                       </button>
                       <input
                         type="number"
@@ -165,6 +191,7 @@ const SaveGameStatsForm: React.FC<GameStatsFormProps> = ({
                         onChange={handleChange}
                         min={0}
                       />
+
                       <button
                         type="button"
                         className="btn btn-outline-secondary"

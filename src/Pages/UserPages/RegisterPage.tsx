@@ -1,4 +1,4 @@
-import RegisterForm from "../../Components/RegisterForm.tsx";
+import RegisterForm from "../../Components/Forms/RegisterForm.tsx";
 import axios from "../../api/axios.tsx";
 
 export default function Register() {
