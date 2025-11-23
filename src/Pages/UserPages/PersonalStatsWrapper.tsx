@@ -5,5 +5,5 @@ export const PlayerStatsWrapper: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   if (!id) return <div>User ID missing</div>;
 
-  return <PlayerStatsPage userId={id} />;
+  return <PlayerStatsPage userId={id} isHome={false} />;
 };

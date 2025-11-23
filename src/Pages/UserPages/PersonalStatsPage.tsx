@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaTrophy,
   FaGamepad,
@@ -43,10 +43,16 @@ type PlayerStats = {
 
 type PlayerStatsPageProps = {
   userId: string;
+  isHome?: boolean;
+  hiddenButton?: boolean;
 };
 
-const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
+const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({
+  userId,
+  isHome = true,
+}) => {
   const [stats, setStats] = useState<PlayerStats | null>(null);
+
   const navigate = useNavigate();
   useEffect(() => {
     const fetchStats = async () => {
@@ -77,9 +83,35 @@ const PlayerStatsPage: React.FC<PlayerStatsPageProps> = ({ userId }) => {
         <h2 className="fw-bold">{stats?.profileName} : Statistics</h2>
       </div>
       <div className="text-center mb-4">
-        <button className="btn btn-primary mt-3" onClick={handleHistoryClick}>
-          View Game History
-        </button>
+        <div
+          className="
+      d-flex 
+      flex-column flex-sm-column flex-md-row
+      justify-content-center 
+      align-items-center
+      gap-2
+    "
+        >
+          <button
+            className="btn btn-primary"
+            onClick={handleHistoryClick}
+            style={{ backgroundColor: "#2a6fbeff" }}
+          >
+            View Game History
+          </button>
+
+          {isHome && (
+            <>
+              <Link to="/game" className="btn btn-warning">
+                New Game
+              </Link>
+
+              <Link to="/Leaderboard" className="btn btn-success">
+                Leaderboard
+              </Link>
+            </>
+          )}
+        </div>
       </div>
       {/* Game Outcomes */}
       <div className="mb-5">
