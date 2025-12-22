@@ -10,7 +10,7 @@ export default function LogIn() {
     password: string;
   }) => {
     try {
-      const response = await fetch("https://poolgameapi.space/api/v2/log-in", {
+      const response = await fetch("https://poolgameapi.com/api/v2/log-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
