@@ -51,7 +51,13 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             docker pull rishaviq/react-app:latest
+
             docker stop react-app || true
             docker rm react-app || true
+
             docker run -d --name react-app -p 3000:80 \
+              --restart unless-stopped \
               rishaviq/react-app:latest
+
+            # cleanup unused images
+            docker image prune -f
