@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken, clearToken } from "../auth/token";
 
 const instance = axios.create({
-  baseURL: "https://poolgameapi.com/api/v2",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 instance.interceptors.request.use((config) => {

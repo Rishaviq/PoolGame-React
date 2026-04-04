@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import { getUserId } from "../auth/token";
@@ -53,7 +54,7 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
     connection.on("RemovePlayer", (playerId: number) => {
       console.log("remove player");
       setPlayerStats((prev) =>
-        prev.filter((player) => player.userId !== playerId)
+        prev.filter((player) => player.userId !== playerId),
       );
       console.log("Removing Player");
     });
@@ -78,7 +79,7 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
                   fouls: request.fouls,
                   bestStreak: request.bestStreak,
                 }
-              : player
+              : player,
           );
         } else {
           return [
@@ -98,6 +99,7 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
     });
 
     (connection as any)._eventsAttached = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection]);
 
   return { opponentStats };

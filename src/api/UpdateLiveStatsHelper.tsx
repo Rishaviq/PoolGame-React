@@ -13,11 +13,10 @@ export const UpdateLiveStats = async () => {
   console.log("Updating Live Stats");
   const match = document.cookie.match(/(?:^|; )form=([^;]*)/);
   if (match) {
-    let request: StatUpdateRequest;
     const cookieFormData: GameStatsFormData = JSON.parse(
-      decodeURIComponent(match[1])
+      decodeURIComponent(match[1]),
     );
-    request = {
+    const request: StatUpdateRequest = {
       userId: cookieFormData.userId,
       profileName: cookieFormData.profileName ?? "",
       shotsAttempted: cookieFormData.shotsAttempted,
