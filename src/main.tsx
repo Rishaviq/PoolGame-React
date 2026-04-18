@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "./auth/AuthContext.tsx";
+import "./style/style.scss";
 
 createRoot(document.getElementById("root")!).render(
   <AuthProvider>

@@ -1,0 +1,25 @@
+@use "./colors" as *;
+
+.auth {
+  .form {
+    &__response-container {
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      padding: 20px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      background-color: $offWhite;
+      border-width: 1px;
+      border-style: solid;
+      border-color: $warning;
+    }
+
+    &__response-container:has(p:empty) {
+      display: none;
+    }
+
+    &__response-message {
+    }
+  }
+}

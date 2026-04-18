@@ -7,9 +7,10 @@ type Credentials = {
 
 type LoginFormProps = {
   onSubmit: (credentials: Credentials) => void;
+  errorMessage?: string;
 };
 
-export default function LoginForm({ onSubmit }: LoginFormProps) {
+export default function LoginForm({ onSubmit, errorMessage }: LoginFormProps) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -19,7 +20,11 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 300, margin: "auto" }}>
+    <form
+      className="form"
+      onSubmit={handleSubmit}
+      style={{ maxWidth: 300, margin: "auto" }}
+    >
       <div style={{ marginBottom: 12 }}>
         <label htmlFor="username" style={{ display: "block", marginBottom: 4 }}>
           Username:
@@ -49,7 +54,9 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
           autoComplete="current-password"
         />
       </div>
-
+      <div className="form__response-container">
+        <p className="form__response-message">{errorMessage}</p>
+      </div>
       <button
         type="submit"
         style={{
