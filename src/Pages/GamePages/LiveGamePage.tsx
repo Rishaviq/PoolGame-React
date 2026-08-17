@@ -101,7 +101,7 @@ const SaveGameStatsPage: React.FC = () => {
     console.log("joining game");
     JoinLiveGame({
       gameId: state?.gameId ?? 0,
-      userId: parseInt(getUserId() || ""),
+      playerId: parseInt(getUserId() || ""),
       profileName: getProfileName() || "",
     });
   }
@@ -128,7 +128,7 @@ const SaveGameStatsPage: React.FC = () => {
       )}
       <div className="row justify-content-center">
         {opponentStats.map((player) => (
-          <div key={player.userId} className="col-md-6 mb-4">
+          <div key={player.playerId} className="col-md-6 mb-4">
             <OpponentCard stats={player} profileName={player.profileName} />
           </div>
         ))}

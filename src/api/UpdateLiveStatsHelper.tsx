@@ -1,11 +1,19 @@
 import type { GameStatsFormData } from "../Components/Forms/SaveGameStatsForm";
 import { GetGameConnection } from "./connectionBuilder";
-import type { StatUpdateRequest } from "./useGameHub";
 
-interface JoinGameRequest {
-  userId: number;
+export interface LiveStatsUpdateRequest {
+  playerId: number;
   gameId: number;
   profileName: string;
+  stats?: LiveStats;
+}
+
+interface LiveStats {
+  shotsMade: number;
+  shotsAttempted: number;
+  handBalls: number;
+  fouls: number;
+  bestStreak: number;
 }
 
 export const UpdateLiveStats = async () => {
@@ -16,25 +24,42 @@ export const UpdateLiveStats = async () => {
     const cookieFormData: GameStatsFormData = JSON.parse(
       decodeURIComponent(match[1]),
     );
-    const request: StatUpdateRequest = {
-      userId: cookieFormData.userId,
+    const request: LiveStatsUpdateRequest = {
+      playerId: cookieFormData.userId,
+      gameId: cookieFormData.gameId,
       profileName: cookieFormData.profileName ?? "",
-      shotsAttempted: cookieFormData.shotsAttempted,
-      shotsMade: cookieFormData.shotsMade,
-      fouls: cookieFormData.fouls,
-      handBalls: cookieFormData.handBalls,
-      bestStreak: cookieFormData.bestStreak,
+      stats: {
+        shotsAttempted: cookieFormData.shotsAttempted,
+        shotsMade: cookieFormData.shotsMade,
+        fouls: cookieFormData.fouls,
+        handBalls: cookieFormData.handBalls,
+        bestStreak: cookieFormData.bestStreak,
+      },
     };
     await connectionRef.invoke("UpdateLiveStats", request);
     console.log("Sending update on stats");
   }
 };
 
-export const JoinLiveGame = async (request: JoinGameRequest) => {
+export const JoinLiveGame = async (request: LiveStatsUpdateRequest) => {
   const connectionRef = await GetGameConnection();
-  connectionRef.invoke("JoinGame", {
-    UserId: request.userId,
-    GameId: request.gameId,
-    ProfileName: request.profileName,
-  });
+
+  const match = document.cookie.match(/(?:^|; )form=([^;]*)/);
+  if (!match) {
+    return;
+  }
+
+  const cookieFormData: GameStatsFormData = JSON.parse(
+    decodeURIComponent(match[1]),
+  );
+
+  request.stats = {
+    shotsAttempted: cookieFormData.shotsAttempted,
+    shotsMade: cookieFormData.shotsMade,
+    fouls: cookieFormData.fouls,
+    handBalls: cookieFormData.handBalls,
+    bestStreak: cookieFormData.bestStreak,
+  };
+
+  connectionRef.invoke("JoinGame", request);
 };

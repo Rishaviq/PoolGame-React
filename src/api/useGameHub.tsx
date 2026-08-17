@@ -2,15 +2,10 @@
 import { useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import { getUserId } from "../auth/token";
-import { UpdateLiveStats } from "./UpdateLiveStatsHelper";
+import type { LiveStatsUpdateRequest } from "./UpdateLiveStatsHelper";
 
-interface JoinGameRequest {
-  userId: number;
-  gameId: number;
-  profileName: string;
-}
-export type StatUpdateRequest = {
-  userId: number;
+export type PlayerStats = {
+  playerId: number;
   profileName: string;
   shotsMade: number | null;
   shotsAttempted: number | null;
@@ -20,7 +15,7 @@ export type StatUpdateRequest = {
 };
 
 export type EnemyPlayerCard = {
-  userId: number;
+  playerId: number;
   profileName: string;
   shotsMade?: number | null;
   shotsAttempted?: number | null;
@@ -36,16 +31,25 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
   useEffect(() => {
     if (!connection) return;
     if ((connection as any)._eventsAttached) return;
-    connection.on("AddPlayer", (request: JoinGameRequest) => {
-      if (request.userId === playerId) return;
+
+    connection.on("AddNewPlayer", (request: PlayerStats) => {
+      if (request.playerId === playerId) return;
 
       setPlayerStats((prev) => {
-        if (prev.some((player) => player.userId === request.userId))
+        if (prev.some((player) => player.playerId === request.playerId))
           return prev;
         console.log("Adding Player");
         return [
           ...prev,
-          { userId: request.userId, profileName: request.profileName },
+          {
+            playerId: request.playerId,
+            profileName: request.profileName,
+            shotsMade: request.shotsMade,
+            shotsAttempted: request.shotsAttempted,
+            handBalls: request.handBalls,
+            fouls: request.fouls,
+            bestStreak: request.bestStreak,
+          },
         ];
       });
     });
@@ -54,47 +58,49 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
     connection.on("RemovePlayer", (playerId: number) => {
       console.log("remove player");
       setPlayerStats((prev) =>
-        prev.filter((player) => player.userId !== playerId),
+        prev.filter((player) => player.playerId !== playerId),
       );
       console.log("Removing Player");
     });
 
-    connection.on("SendUpdate", () => {
-      console.log("entered send update");
-      UpdateLiveStats();
+    connection.on("UpdateUser", (request: LiveStatsUpdateRequest) => {
+      setPlayerStats((prev) => {
+        return prev.map((player) => {
+          if (player.playerId !== request.playerId) {
+            return player;
+          }
+
+          return {
+            playerId: request.playerId,
+            profileName: request.profileName || "",
+            shotsMade: request.stats?.shotsMade ?? 0,
+            shotsAttempted: request.stats?.shotsAttempted ?? 0,
+            handBalls: request.stats?.handBalls ?? 0,
+            fouls: request.stats?.fouls ?? 0,
+            bestStreak: request.stats?.bestStreak ?? 0,
+          };
+        });
+      });
     });
 
-    connection.on("UpdateUser", (request: StatUpdateRequest) => {
-      setPlayerStats((prev) => {
-        const exists = prev.find((p) => p.userId === request.userId);
-        if (exists) {
-          return prev.map((player) =>
-            player.userId === request.userId
-              ? {
-                  ...player,
-                  profileName: request.profileName || "",
-                  shotsMade: request.shotsMade,
-                  shotsAttempted: request.shotsAttempted,
-                  handBalls: request.handBalls,
-                  fouls: request.fouls,
-                  bestStreak: request.bestStreak,
-                }
-              : player,
-          );
-        } else {
-          return [
+    connection.on("CreateGame", (playersInGame: PlayerStats[]) => {
+      playersInGame.forEach((player) => {
+        if (player.playerId === playerId) return;
+        setPlayerStats((prev) => {
+          prev = [
             ...prev,
             {
-              userId: request.userId,
-              profileName: request.profileName || "",
-              shotsMade: request.shotsMade,
-              shotsAttempted: request.shotsAttempted,
-              handBalls: request.handBalls,
-              fouls: request.fouls,
-              bestStreak: request.bestStreak,
+              playerId: player.playerId,
+              profileName: player.profileName,
+              shotsMade: player.shotsMade,
+              shotsAttempted: player.shotsAttempted,
+              handBalls: player.handBalls,
+              fouls: player.fouls,
+              bestStreak: player.bestStreak,
             },
           ];
-        }
+          return prev;
+        });
       });
     });
 
