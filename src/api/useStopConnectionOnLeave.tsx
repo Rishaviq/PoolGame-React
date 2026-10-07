@@ -1,25 +1,19 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { StopGameConnection } from "./connectionBuilder";
+import { useEffect, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 
 export const useLeaveGameOnUnload = (
-  connection: signalR.HubConnection | null
+  connection: signalR.HubConnection | null,
 ) => {
-  const location = useLocation();
+  const connRef = useRef(connection);
+  connRef.current = connection;
 
   useEffect(() => {
     return () => {
-      if (connection) {
-        // Step 1: leave the game group
-        connection
-          .invoke("LeaveGame")
-          .then(() => {
-            StopGameConnection()();
-            console.log("Connection stopped and left the game group.");
-          })
-          .catch((err) => console.error("Failed to leave game:", err));
-      }
+      const c = connRef.current;
+      if (!c) return;
+      c.invoke("LeaveGame")
+        .catch((err) => console.error("Failed to leave game:", err))
+        .finally(() => c.stop());
     };
-  }, [location.pathname, connection]);
+  }, []);
 };

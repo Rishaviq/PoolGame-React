@@ -10,7 +10,10 @@ import { OpponentCard } from "../../Components/StatCards/OpponentCard";
 import { useGameHub } from "../../api/useGameHub";
 import { JoinLiveGame } from "../../api/UpdateLiveStatsHelper";
 import { getProfileName, getUserId } from "../../auth/token";
-import { GetGameConnection } from "../../api/connectionBuilder";
+import {
+  GetGameConnection,
+  ResetGameConnection,
+} from "../../api/connectionBuilder";
 import * as signalR from "@microsoft/signalr";
 import { useLeaveGameOnUnload } from "../../api/useStopConnectionOnLeave";
 
@@ -23,20 +26,17 @@ const SaveGameStatsPage: React.FC = () => {
   const [alertIsVisible, SetVisability] = useState<boolean | null>(null);
   const state = location.state as LocationState | null;
   const [playerStats, setPlayerStats] = useState<GameStatsFormData | null>(
-    null
+    null,
   );
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
-    null
+    null,
   );
+  const [reconnectKey, setReconnectKey] = useState(0);
 
   const { opponentStats } = useGameHub(connection);
 
   useLeaveGameOnUnload(connection);
 
-  if (!state?.gameId) {
-    // fallback if someone directly types /save-game
-    return <Navigate to="/" replace />;
-  }
   const SendSubmit = async (formData: GameStatsFormData) => {
     try {
       const response = axios.post("player/stats/save", formData);
@@ -51,7 +51,9 @@ const SaveGameStatsPage: React.FC = () => {
         setMessage(`Failed to save stats: ${error}`);
       }
     } catch (error) {
-      setMessage("An unexpected error occurred. Please try again later.");
+      setMessage(
+        `An unexpected error occurred. Please try again later.  ${error}`,
+      );
     }
   };
 
@@ -74,28 +76,34 @@ const SaveGameStatsPage: React.FC = () => {
     SetVisability(true);
     setPlayerStats(formData);
   };
+
   useEffect(() => {
-    let alive = true;
+    let isAlive = true;
     (async () => {
       try {
+        await ResetGameConnection();
         const conn = await GetGameConnection();
-        if (!alive) return;
-        setConnection(conn); // store in state or context
-        JoinGame();
-
-        if (!conn) {
-          console.log("return error");
-          return;
-        }
+        if (!isAlive) return;
+        setConnection(conn);
       } catch (err) {
         console.error("Failed to connect:", err);
       }
     })();
 
+    function handleVisibility() {
+      if (document.visibilityState === "visible") setReconnectKey((k) => k + 1);
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+
     return () => {
-      alive = false;
+      isAlive = false;
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [location]);
+  }, [location, reconnectKey]);
+
+  useEffect(() => {
+    if (connection) JoinGame();
+  }, [connection]);
 
   function JoinGame(): void {
     console.log("joining game");
@@ -104,6 +112,11 @@ const SaveGameStatsPage: React.FC = () => {
       playerId: parseInt(getUserId() || ""),
       profileName: getProfileName() || "",
     });
+  }
+
+  if (!state?.gameId) {
+    // fallback if someone directly types /save-game
+    return <Navigate to="/" replace />;
   }
 
   return (

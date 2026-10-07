@@ -30,7 +30,7 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
 
   useEffect(() => {
     if (!connection) return;
-    if ((connection as any)._eventsAttached) return;
+    setPlayerStats([]);
 
     connection.on("AddNewPlayer", (request: PlayerStats) => {
       if (request.playerId === playerId) return;
@@ -84,24 +84,11 @@ export const useGameHub = (connection: signalR.HubConnection | null) => {
     });
 
     connection.on("CreateGame", (playersInGame: PlayerStats[]) => {
-      playersInGame.forEach((player) => {
-        if (player.playerId === playerId) return;
-        setPlayerStats((prev) => {
-          prev = [
-            ...prev,
-            {
-              playerId: player.playerId,
-              profileName: player.profileName,
-              shotsMade: player.shotsMade,
-              shotsAttempted: player.shotsAttempted,
-              handBalls: player.handBalls,
-              fouls: player.fouls,
-              bestStreak: player.bestStreak,
-            },
-          ];
-          return prev;
-        });
-      });
+      setPlayerStats(
+        playersInGame
+          .filter((p) => p.playerId !== playerId)
+          .map((p) => ({ ...p })),
+      );
     });
 
     (connection as any)._eventsAttached = true;

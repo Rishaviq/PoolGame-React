@@ -1,5 +1,5 @@
 import type { GameStatsFormData } from "../Components/Forms/SaveGameStatsForm";
-import { GetGameConnection } from "./connectionBuilder";
+import { GetGameConnection, RememberJoinRequest } from "./connectionBuilder";
 
 export interface LiveStatsUpdateRequest {
   playerId: number;
@@ -43,23 +43,27 @@ export const UpdateLiveStats = async () => {
 
 export const JoinLiveGame = async (request: LiveStatsUpdateRequest) => {
   const connectionRef = await GetGameConnection();
-
   const match = document.cookie.match(/(?:^|; )form=([^;]*)/);
-  if (!match) {
-    return;
+
+  if (match) {
+    const c: GameStatsFormData = JSON.parse(decodeURIComponent(match[1]));
+    request.stats = {
+      shotsAttempted: c.shotsAttempted,
+      shotsMade: c.shotsMade,
+      fouls: c.fouls,
+      handBalls: c.handBalls,
+      bestStreak: c.bestStreak,
+    };
+  } else {
+    request.stats = {
+      shotsAttempted: 0,
+      shotsMade: 0,
+      fouls: 0,
+      handBalls: 0,
+      bestStreak: 0,
+    };
   }
 
-  const cookieFormData: GameStatsFormData = JSON.parse(
-    decodeURIComponent(match[1]),
-  );
-
-  request.stats = {
-    shotsAttempted: cookieFormData.shotsAttempted,
-    shotsMade: cookieFormData.shotsMade,
-    fouls: cookieFormData.fouls,
-    handBalls: cookieFormData.handBalls,
-    bestStreak: cookieFormData.bestStreak,
-  };
-
-  connectionRef.invoke("JoinGame", request);
+  RememberJoinRequest(request);
+  await connectionRef.invoke("JoinGame", request);
 };

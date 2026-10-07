@@ -1,7 +1,13 @@
 import * as signalR from "@microsoft/signalr";
+import type { LiveStatsUpdateRequest } from "./UpdateLiveStatsHelper";
 
 let connection: signalR.HubConnection | null = null;
 let startPromise: Promise<void> | null = null;
+let lastJoinRequest: LiveStatsUpdateRequest | null = null;
+
+export function RememberJoinRequest(req: LiveStatsUpdateRequest | null) {
+  lastJoinRequest = req;
+}
 
 export function GetGameConnection(): Promise<signalR.HubConnection> {
   if (!connection) {
@@ -9,6 +15,15 @@ export function GetGameConnection(): Promise<signalR.HubConnection> {
       .withUrl(`${import.meta.env.VITE_API_URL}/LiveGame`)
       .withAutomaticReconnect()
       .build();
+
+    connection.onreconnected(async () => {
+      if (!lastJoinRequest || !connection) return;
+      try {
+        await connection.invoke("JoinGame", lastJoinRequest);
+      } catch (e) {
+        console.error("Re-join after reconnect failed", e);
+      }
+    });
 
     startPromise = connection
       .start()
@@ -39,4 +54,15 @@ export function StopGameConnection() {
       connection = null;
     }
   };
+}
+
+export async function ResetGameConnection() {
+  const old = connection;
+  connection = null;
+  startPromise = null;
+  try {
+    await old?.stop();
+  } catch {
+    console.error("error in the resetGameConnection");
+  }
 }
